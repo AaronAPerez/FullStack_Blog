@@ -2,14 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
-namespace api.Models
+namespace API.Models
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserModel : ControllerBase
+    public class UserModel
     {
+        public int Id { get; set; }
+
+        public string? Username { get; set; }
         
+        public string? Salt { get; set; }
+        
+        public string? Hash { get; set; }
+
+        public UserModel(){
+
+        }
     }
 }
