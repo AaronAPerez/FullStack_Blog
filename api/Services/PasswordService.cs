@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace api.Services
-{
+namespace api.Services;
+
     public class PasswordService
     {
         
     }
-}

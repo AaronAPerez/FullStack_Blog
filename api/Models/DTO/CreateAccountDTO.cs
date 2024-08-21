@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace api.Models.DTO
+namespace api.Models.DTO;
+
+public class CreateAccountDTO
 {
-    public class CreateAccountDTO
-    {
-        public int Id { get; set; }
-        public string? Username { get; set; }
-        public string? Password { get; set; }
-    }
+    public int Id { get; set; }
+    public string? Username { get; set; }
+    public string? Password { get; set; }
 }
