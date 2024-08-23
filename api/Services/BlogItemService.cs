@@ -44,20 +44,32 @@ public class BlogItemService : ControllerBase
         throw new NotImplementedException();
     }
 
-    // public List<BlogItemModel> GetItemsByTag(string Tag)
-    // {
-    //     List<BlogItemModel> AllBlogsWithTag = new List<BlogItemModel>();
-    //     var allItems = GetAllBlogItems().ToList();
-    //     for(int i = 0; i < allItems.Count; i++)
-    //     {
-    //         BlogItemModel Item = allItems[i];
-    //         var itemArr = Item.Tag.Split(',');
-    //     }
+    public List<BlogItemModel> GetItemsByTag(string Tag)
+    {
+        List<BlogItemModel> AllBlogsWithTag = new List<BlogItemModel>();
+        var allItems = GetAllBlogItems().ToList();
+        for(int i = 0; i < allItems.Count; i++)
+        {
+            BlogItemModel Item = allItems[i];
+            var itemArr = Item.Tag.Split(',');
+            for(int j = 0; j < itemArr.Length; j++)
+            {
+                if(itemArr[j].Contains(Tag))
+                {
+                    AllBlogsWithTag.Add(Item);
+                    break;
+                }
+            }
+        }
+        return AllBlogsWithTag;
 
-    // }
+    }
 
     public bool UpdateBlogItems(BlogItemModel blogUpdate)
     {
         throw new NotImplementedException();
     }
+
+
+
 }

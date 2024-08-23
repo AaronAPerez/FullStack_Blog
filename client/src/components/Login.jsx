@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Container, Row, Col,Button,Form } from "react-bootstrap";
+import {useNavigate} from 'react-router-dom';
+import { GetLoggedInUser, login } from "../Services/DataService";
 
 
-const Login = () => {
+
+const Login = ({onLogin}) => {
+
+  let navigate = useNavigate();
 
     //usestates to hold our username and passwords
     const [Username, setUsername] = useState('');
@@ -22,12 +27,22 @@ const Login = () => {
     }
 
     //Function or method to hanlde our submit
-    const handleSubmit = () => {
+    const handleSubmit =  async () => {
         let userData = {
             username: Username,
             password: Password
         }
         console.log(userData);
+        onLogin(userData)
+
+       let token = await login(userData)
+       console.log(token.token, "This should log the token");
+       if(token.token != null)
+       {
+        localStorage.setItem("Token",token.token);
+        GetLoggedInUser(Username);
+        navigate('/Dashboard')
+       }
         
     }
 
@@ -55,7 +70,7 @@ const Login = () => {
               </Button>
               {/* checking github */}
               <p className="mt-3">Don't have an account?</p>
-              <Button variant="outline-primary" onClick={handleSubmit}>
+              <Button variant="outline-primary" onClick={() => navigate('/CreateAccount')}>
                 Create Account
               </Button>
             </Form>

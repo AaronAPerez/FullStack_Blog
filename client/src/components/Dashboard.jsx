@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 
 import Form from "react-bootstrap/Form";
 import Accordion from 'react-bootstrap/Accordion';
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = ({ isDarkMode }) => {
   const [show, setShow] = useState(false);
@@ -15,6 +16,9 @@ const Dashboard = ({ isDarkMode }) => {
   const [blogTags, setBlogTags] = useState('');
 
   const [edit, setEdit] = useState(false);
+
+  const [userId, setUser] = useState(0);
+  const[PublisherName, setPublisherName] = useState("");
 
   //Dummy data useState
   const [blogItems, setBlogItems] = useState([
@@ -70,6 +74,39 @@ const Dashboard = ({ isDarkMode }) => {
     },
   ]);
 
+  const handleSaveWithPublish = () =>
+  {
+    const published = {
+      Id:0,
+        UserId: userId,
+        PublisherName,
+        Tag: blogTags,
+        Title:blogTitle,
+        Image:blogImage,
+        Description:blogDescription,
+        Date: new Date(),
+        Catergory: blogCategory,
+        IsPublished: true,
+        IsDeleted: false,
+    }
+  }
+  const handleSaveWithUnpublish = () =>
+  {
+    const published = {
+      Id:0,
+        UserId: userId,
+        PublisherName,
+        Tag: blogTags,
+        Title:blogTitle,
+        Image:blogImage,
+        Description:blogDescription,
+        Date: new Date(),
+        Catergory: blogCategory,
+        IsPublished: true,
+        IsDeleted: false,
+    }
+  }
+
 
   const handleClose = () => setShow(false);
   const handleShow = (e) => {
@@ -110,6 +147,20 @@ const handleCategory = (e) => {
 const handleImage = (e) => {
     setBlogImage(e.target.value)
 }
+
+
+let navigate = useNavigate();
+//useEffect
+useEffect(() => {
+    if(!checkToken())
+    {
+        navigate('/Login');
+    }
+ 
+
+
+}, [])
+
 
   return (
     <>
@@ -169,10 +220,10 @@ const handleImage = (e) => {
             <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="outline-primary" onClick={handleClose}>
+            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
             {edit ? "  Save Changes" : "Save"}
             </Button>
-            <Button variant="outline-primary" onClick={handleClose}>
+            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
               {edit ? "  Save Changes" : "Save"} and Publish
             </Button>
           </Modal.Footer>

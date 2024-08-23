@@ -44,11 +44,11 @@ public class BlogController : ControllerBase
 
     //GetItemsByTags
 
-    // [HttpGet("GetItemsByTag/{Tag}")]
-    // public List<BlogItemModel> GetItemsByTag(string Tag)
-    // {
-    //     return _data.GetItemsByTag(Tag);
-    // }
+    [HttpGet("GetItemsByTag/{Tag}")]
+    public List<BlogItemModel> GetItemsByTag(string Tag)
+    {
+        return _data.GetItemsByTag(Tag);
+    }
 
     //GetBlogItemsByDate
 
