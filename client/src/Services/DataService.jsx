@@ -53,9 +53,51 @@ const login = async (loginUser) =>
 
     const GetLoggedInUser = async (username) => 
     {
-       let result = await fetch(`"http://localhost:5006/api/User/GetUserByUsername/${username}"`)
+       let result = await fetch(`"http://localhost:5021/api/User/GetUserByUsername/${username}"`)
        console.log(result)
+
+       userData = await result.json();
+       console.log(userData)
     }
+
+    const LoggedInData = () =>
+    {
+        return userData;
+    }
+
+    const AddBlogItems = async (blogItems) =>
+        result = await fetch("http://localhost:5021/api/User/AddblogItems",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(blogItems)
+        })
+        if(!result.ok)
+        {
+            const message = `Check Yourself, ERROR Your Bad CODE!${result.status}` throw new Error(message);
+        }
+            let data = await result.json();
+            console.log(data);
+            return data;
+        }
+        const getBlogItems = async () =>
+        {
+            let result = await fetch("http://localhost:5021/api/User/GetBlogItems")
+
+            let data = await result.json();
+            console.log(data, "from our getblogItems method")
+            return data;
+        }
+
+        const GetItemsByUserId = async (UserId) =>
+        {
+            let result = await fetch(`http://localhost:5021/api/User/GetBlogItems"`)
+        }
+    
+
+   
+    
 
 
 

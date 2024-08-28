@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Button, Row, Col } from "react-bootstrap";
-import NavBar from "./components/Navbar";
+import NavBar from "./components/NavBar";
 import CarouselHero from "./components/CarouselHero";
 import Dashboard from "./components/Dashboard";
 import BlogPage from "./components/BlogPage";
@@ -12,7 +12,9 @@ const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [user, setUser] = useState(null);
 
-  const handleLogin = {userData}
+  const handleLogin = (userData) => {
+    setUser(userData);
+  }
 
   useEffect(() => {
     const currentTheme = localStorage.getItem("theme");
@@ -52,7 +54,7 @@ const App = () => {
             </Col>
               <Routes>
                 <Route path="/" element={<BlogPage/>}/>
-                <Route path="/Login" element={<Login onLogin={handleLogin}/>}/>
+                <Route path="/Login" element={<Login onLogin={handleLogin} />}/>
                 <Route path="/CreateAccount" element={<CreateAccount/>}/>
                 <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode} />}/>
 

@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState,useEffect  } from "react";
 import { Container, FormGroup,ListGroup } from "react-bootstrap";
 import { Col, Row, Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 
 import Form from "react-bootstrap/Form";
 import Accordion from 'react-bootstrap/Accordion';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from 'react-router-dom';
+import { checkToken, GetLoggedInUser, LoggedInData } from "../Services/DataService";
 
 const Dashboard = ({ isDarkMode }) => {
   const [show, setShow] = useState(false);
@@ -17,8 +18,8 @@ const Dashboard = ({ isDarkMode }) => {
 
   const [edit, setEdit] = useState(false);
 
-  const [userId, setUser] = useState(0);
-  const[PublisherName, setPublisherName] = useState("");
+  const [userId, setUserId] = useState(0);
+  const [publisherName, setPublisherName] = useState("");
 
   //Dummy data useState
   const [blogItems, setBlogItems] = useState([
@@ -75,36 +76,49 @@ const Dashboard = ({ isDarkMode }) => {
   ]);
 
   const handleSaveWithPublish = () =>
-  {
+    {
+    let {publisherName, userId}  = LoggedInData();
     const published = {
       Id:0,
-        UserId: userId,
-        PublisherName,
-        Tag: blogTags,
-        Title:blogTitle,
-        Image:blogImage,
-        Description:blogDescription,
-        Date: new Date(),
-        Catergory: blogCategory,
-        IsPublished: true,
-        IsDeleted: false,
+      UserId: userId,
+      PublisherName:publisherName,
+      Tag: blogTags,
+      Title:blogTitle,
+      Image:blogImage,
+      Description:blogDescription,
+      Date: new Date(),
+      Category: blogCategory,
+      IsPublished: true,
+      IsDeleted: false,
+    }
+    console.log(published)
+    handleClose();
+    let result = await AddBlogItems(published)
+    if(result)
+    {
+      let userBlogItems = await GetItemsByUserId(userId);
+      setBlogItems(userBlogItems);
+      console.log(userBlogItems," This is from our UserrBlogItems");
+      
     }
   }
   const handleSaveWithUnpublish = () =>
   {
-    const published = {
+    let {publisherName, userId}  = LoggedInData();
+    const notPublished = {
       Id:0,
-        UserId: userId,
-        PublisherName,
-        Tag: blogTags,
-        Title:blogTitle,
-        Image:blogImage,
-        Description:blogDescription,
-        Date: new Date(),
-        Catergory: blogCategory,
-        IsPublished: true,
-        IsDeleted: false,
+      UserId: userId,
+      PublisherName:publisherName,
+      Tag: blogTags,
+      Title:blogTitle,
+      Image:blogImage,
+      Description:blogDescription,
+      Date: new Date(),
+      Category: blogCategory,
+      IsPublished: false,
+      IsDeleted: false,
     }
+    console.log(notPublished)
   }
 
 
@@ -144,23 +158,30 @@ const handleTags = (e) => {
 const handleCategory = (e) => {
     setBlogCategory(e.target.value)
 }
-const handleImage = (e) => {
-    setBlogImage(e.target.value)
-}
-
-
+// const handleImage = (e) => {
+//     setBlogImage(e.target.value)
+// }
 let navigate = useNavigate();
-//useEffect
-useEffect(() => {
+//useEffect is the first thing that fires onload.
+  useEffect(() => {
     if(!checkToken())
     {
-        navigate('/Login');
+      navigate('/Login');
     }
- 
+  
+    
+  }, [])
 
-
-}, [])
-
+  const handleImage = async (e) =>
+  {
+    let file = e.target.files[0];
+     const reader = new FileReader();
+     reader.onloadend = () => {
+      console.log(reader.result);
+     }
+     reader.readAsDataURL(file);
+  }
+  
 
   return (
     <>
@@ -193,8 +214,9 @@ useEffect(() => {
                 <Form.Label>Description</Form.Label>
                 <Form.Control as="textarea" placeholder="Enter Description" value={blogDescription} onChange={handleDescription} />
                 </Form.Group>
-                <FormGroup>
-                    <Form.Select controlId="Category" value={blogCategory} onChange={handleCategory}>
+                <FormGroup  controlId="Category">
+                <Form.Label>Title</Form.Label>
+                    <Form.Select value={blogCategory} onChange={handleCategory}>
                         <option>Select Category</option>
                         <option value="Food">Food</option>
                         <option value="Fitness" >Fitness</option>
@@ -204,12 +226,12 @@ useEffect(() => {
                 </FormGroup>
 
               <Form.Group className="mb-3" controlId="Tags">
-                <Form.Label>Tags</Form.Label>
+              <Form.Label>Tags</Form.Label>
                 <Form.Control type="text" placeholder="Enter Tag" value={blogTags} onChange={handleTags} />
               </Form.Group>
               <FormGroup className="mb-3" controlId="Image">
                 <Form.Label>Pick an Image</Form.Label >
-                <Form.Control type="file" placeholder="Select an Image from file" value={blogImage} onChange={handleImage} />
+                <Form.Control type="file" placeholder="Select an Image from file" accept="image/png,image/jpg" onChange={handleImage} />
 
               </FormGroup>
              
@@ -220,7 +242,7 @@ useEffect(() => {
             <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
+            <Button variant="outline-primary" onClick={handleSaveWithUnpublish}>
             {edit ? "  Save Changes" : "Save"}
             </Button>
             <Button variant="outline-primary" onClick={handleSaveWithPublish}>
@@ -269,3 +291,4 @@ useEffect(() => {
 };
 
 export default Dashboard;
+
