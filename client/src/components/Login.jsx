@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Container, Row, Col,Button,Form } from "react-bootstrap";
 import {useNavigate} from 'react-router-dom';
 import { GetLoggedInUser, login } from "../Services/DataService";
+import { setUser } from "../App"
 
 
 
-const Login = ({onLogin}) => {
+const Login = ({onLogin, setUser}) => {
 
   let navigate = useNavigate();
 
@@ -30,7 +31,8 @@ const Login = ({onLogin}) => {
     const handleSubmit =  async () => {
         let userData = {
             username: Username,
-            password: Password
+            password: Password,
+            publisherName: Username
         }
         console.log(userData);
         onLogin(userData)
@@ -40,9 +42,11 @@ const Login = ({onLogin}) => {
        if(token.token != null)
        {
         localStorage.setItem("Token",token.token);
+        localStorage.setItem("UserData",JSON.stringify)
         GetLoggedInUser(Username);
-        navigate('/Dashboard')
+        navigate('/Dashboard');
        }
+       setUser(userData);
         
     }
 

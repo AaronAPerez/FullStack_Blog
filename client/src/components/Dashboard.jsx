@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Accordion from 'react-bootstrap/Accordion';
 import {useNavigate} from 'react-router-dom';
-import { checkToken, GetLoggedInUser, LoggedInData } from "../Services/DataService";
+import { AddBlogItems, checkToken, GetItemsByUserId, GetLoggedInUser, LoggedInData } from "../Services/DataService";
 
 const Dashboard = ({ isDarkMode }) => {
   const [show, setShow] = useState(false);
@@ -22,60 +22,9 @@ const Dashboard = ({ isDarkMode }) => {
   const [publisherName, setPublisherName] = useState("");
 
   //Dummy data useState
-  const [blogItems, setBlogItems] = useState([
-    {
-      Id: 1,
-      Title: "Top Finishing and Crossing Drills",
-      Publisher: "anonymous",
-      Date: "01-13-2022",
-      Text: "Developing finishing and crossing skills is an important aspect of soccer that can greatly constribute to your player.",
-      Image:
-            "./assets/Images/3soccerballs.jpg",
-      Published: true
-    },
-    {
-      Id: 2,
-      Title: "6 Soccer Drills to Work on Defense",
-      Publisher: "anonymous",
-      Date: "01-14-2022",
-      Text: "A strong defense is the backbone of any successful soccer team",
-      Image:
-            "./assets/Images/3soccerballs.jpg",
-      Published: true
-    },
-    {
-      Id: 3,
-      Title: "5 Small Side Games",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "Small-sided games create a fast-paced and intense environment.",
-      Image:
-            "./assets/Images/3soccerballs.jpg",
-      Published: true
-    },
-    {
-      Id: 4,
-      Title: "5 Fun 1 V 1 Youth Soccer Activites",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "One of the best ways to naturally bring out the competitive nature.",
-      Image:
-            "./assets/Images/3soccerballs.jpg",
-      Published: false
-    },
-    {
-      Id: 5,
-      Title: "5 Fun warm up soccer drills",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "One of the challenges for youth soccer coaches is to make sure their players are always excited to come to practice.",
-      Image:
-            "./assets/Images/3soccerballs.jpg",
-      Published: false
-    },
-  ]);
+  const [blogItems, setBlogItems] = useState([]);
 
-  const handleSaveWithPublish = () =>
+  const handleSaveWithPublish = async () =>
     {
     let {publisherName, userId}  = LoggedInData();
     const published = {
@@ -98,11 +47,12 @@ const Dashboard = ({ isDarkMode }) => {
     {
       let userBlogItems = await GetItemsByUserId(userId);
       setBlogItems(userBlogItems);
-      console.log(userBlogItems," This is from our UserrBlogItems");
+      console.log(userBlogItems,"This is frou our UserBlogItems");
       
+
     }
   }
-  const handleSaveWithUnpublish = () =>
+  const handleSaveWithUnpublish = async () =>
   {
     let {publisherName, userId}  = LoggedInData();
     const notPublished = {
@@ -119,6 +69,16 @@ const Dashboard = ({ isDarkMode }) => {
       IsDeleted: false,
     }
     console.log(notPublished)
+    handleClose();
+    let result = await AddBlogItems(notPublished)
+    if(result)
+    {
+      let userBlogItems = await GetItemsByUserId(userId);
+      setBlogItems(userBlogItems);
+      
+      
+
+    }
   }
 
 
@@ -162,15 +122,33 @@ const handleCategory = (e) => {
 //     setBlogImage(e.target.value)
 // }
 let navigate = useNavigate();
+
+
+//load data
+const loadUserData = async () => {
+    let userInfo = LoggedInData();
+    setUserId(userInfo.userId);
+    setPublisherName(userInfo.publisherName);
+    console.log("User info:", userInfo);
+    setTimeout(async () => {
+
+      let userBlogItems = await GetItemsByUserId(userInfo.userId)
+      setBlogItems(userBlogItems);
+      console.log("Loaded blgo items: ", userBlogItems);
+    },1000)
+
+}
+
+
 //useEffect is the first thing that fires onload.
   useEffect(() => {
     if(!checkToken())
     {
       navigate('/Login');
     }
-  
+    loadUserData();
     
-  }, [])
+  }, [navigate])
 
   const handleImage = async (e) =>
   {
@@ -178,6 +156,7 @@ let navigate = useNavigate();
      const reader = new FileReader();
      reader.onloadend = () => {
       console.log(reader.result);
+      setBlogImage(reader.result);
      }
      reader.readAsDataURL(file);
   }
@@ -256,7 +235,7 @@ let navigate = useNavigate();
         <Accordion.Header>Published</Accordion.Header>
         <Accordion.Body>
          {
-            blogItems.map(item => item.Published &&  <ListGroup key={item.Id}>{item.Title}
+            blogItems.map((item,i) => item.isPublished &&  <ListGroup key={i}>{item.title}
 
                 <Col className="d-flex justify-content-end mx-2">
                     <Button variant="outline-danger mx-2">Delete</Button>
@@ -272,7 +251,7 @@ let navigate = useNavigate();
         <Accordion.Header>Unpublished</Accordion.Header>
         <Accordion.Body>
         {
-            blogItems.map(item => !item.Published &&  <ListGroup key={item.Id}>{item.Title}
+            blogItems.map((item,i )=> !item.isPublished &&  <ListGroup key={i}>{item.title}
             
             <Col className="d-flex justify-content-end mx-2">
                     <Button variant="outline-danger mx-2">Delete</Button>
@@ -291,4 +270,3 @@ let navigate = useNavigate();
 };
 
 export default Dashboard;
-

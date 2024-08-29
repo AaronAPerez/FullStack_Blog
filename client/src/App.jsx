@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Button, Row, Col } from "react-bootstrap";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/Navbar";
 import CarouselHero from "./components/CarouselHero";
 import Dashboard from "./components/Dashboard";
 import BlogPage from "./components/BlogPage";
@@ -33,12 +33,26 @@ const App = () => {
   const toggleDarkMode = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
+  useEffect(() => {
+
+    const storedUser = localStorage.getItem("UserData");
+    console.log(JSON.parse(storedUser),"this is stored user")
+    if(storedUser)
+    {
+        let Userstored = JSON.parse(storedUser);
+        console.log(Userstored.publisherName,"userstored")
+      setUser(Userstored);
+    }
+  
+    
+    
+  }, [])
 
   return (
     <>
       <BrowserRouter>
         <Container className="p-0" fluid>
-          <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          <NavBar  isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} user={user} />
         </Container>
 
         <Container
@@ -54,7 +68,7 @@ const App = () => {
             </Col>
               <Routes>
                 <Route path="/" element={<BlogPage/>}/>
-                <Route path="/Login" element={<Login onLogin={handleLogin} />}/>
+                <Route path="/Login" element={<Login onLogin={handleLogin} setUser={setUser} />}/>
                 <Route path="/CreateAccount" element={<CreateAccount/>}/>
                 <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode} />}/>
 

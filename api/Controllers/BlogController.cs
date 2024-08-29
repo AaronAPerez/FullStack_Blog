@@ -73,7 +73,11 @@ public class BlogController : ControllerBase
         return _data.DeleteBlogItem(BlogDelete);
     }
 
+    //WE need a GetItemsByUserId 
     [HttpGet("GetItemsByUserId/{UserId}")]
 
-    public IEnumerable<BlogItemModel> GetItemsId
+    public IEnumerable<BlogItemModel> GetItemsByUserId (int UserId)
+    {
+        return _data.GetItemsByUserId(UserId);
+    }
 }
