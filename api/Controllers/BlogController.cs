@@ -80,4 +80,10 @@ public class BlogController : ControllerBase
     {
         return _data.GetItemsByUserId(UserId);
     }
+
+    [HttpGet("GetPublishedItems")]
+        public IEnumerable<BlogItemModel> GetPublishedItems() 
+        {
+            return _data.GetPublishedItems();
+        }
 }

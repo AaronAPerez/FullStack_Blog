@@ -7,13 +7,17 @@ import BlogPage from "./components/BlogPage";
 import CreateAccount from "./components/CreateAccount";
 import Login from "./components/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./components/HomePage";
 
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // to handle the login
   const handleLogin = (userData) => {
     setUser(userData);
+    setIsLoggedIn(true);
   }
 
   useEffect(() => {
@@ -30,49 +34,44 @@ const App = () => {
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("UserData");
+  //   if(storedUser)
+  //   {
+  //     let Userstored = JSON.parse(storedUser);
+      
+  //     setUser(Userstored);
+  //   }
+  // }, [])
+  
+
   const toggleDarkMode = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
-  useEffect(() => {
-
-    const storedUser = localStorage.getItem("UserData");
-    console.log(JSON.parse(storedUser),"this is stored user")
-    if(storedUser)
-    {
-        let Userstored = JSON.parse(storedUser);
-        console.log(Userstored.publisherName,"userstored")
-      setUser(Userstored);
-    }
-  
-    
-    
-  }, [])
 
   return (
     <>
       <BrowserRouter>
-        <Container className="p-0" fluid>
-          <NavBar  isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} user={user} />
-        </Container>
-
         <Container
           fluid
           className={`${isDarkMode ? "bg-dark text-light" : "bg-light"}`}
           style={{ minHeight: "100vh", padding: "0px" }}
-          data-bs-theme={isDarkMode ? "dark" : "light"}
         >
-          <CarouselHero isDarkMode={isDarkMode} />
-          <Row className="text-center">
-            <Col>
-              <h1>Our Blog</h1>
-            </Col>
-              <Routes>
-                <Route path="/" element={<BlogPage/>}/>
-                <Route path="/Login" element={<Login onLogin={handleLogin} setUser={setUser} />}/>
-                <Route path="/CreateAccount" element={<CreateAccount/>}/>
-                <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode} />}/>
+          <Container className="p-0" fluid>
+            <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} user={user} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+          </Container>
+          {/* <HomePage isDarkMode={isDarkMode} /> */}
+          <Row className="">
 
-              </Routes>
+            {/* Area for our routes to go to different pages */}
+            <Routes>
+              <Route path="/HomePage" element={<HomePage/>} />
+              <Route path="/Dashboard" element={<Dashboard/>} />
+              <Route path="/BlogPage" element={<BlogPage/>} />
+              <Route path="/Login" element={<Login/>} />
+              <Route path="/CreateAccount" element={<CreateAccount/>} />
+              <Route path="/Dashboard" element={<Dashboard isDarkMode={isDarkMode} onLogin={handleLogin}/>} />
+            </Routes>
 
           </Row>
         </Container>

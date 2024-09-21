@@ -1,3 +1,4 @@
+import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Laptop from '../assets/beachlaptop.jpg';
 
